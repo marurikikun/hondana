@@ -119,15 +119,19 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 .done{text-align:center;padding:16px;background:var(--accent-soft);border-radius:14px;margin-top:18px}
 .empty{color:var(--sub);text-align:center;padding:30px 0}
 .foot{color:var(--sub);font-size:12px;text-align:center;margin-top:28px}
+.offl{background:var(--accent-soft);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:14px;line-height:1.6}
+.ghost.sm{display:inline-block;width:auto;min-height:40px;margin:8px 0 0;padding:0 14px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:15px;z-index:40;max-width:90%;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="empty">読みこみ中…</p></div>
 <div id="chooserRoot"></div>
+<div id="toast" class="toast" hidden></div>
 <script>
 (function(){
 "use strict";
-const V="20261119e";
+const V="20261119f";
 const K_SHELF="hondana.shelf",K_THEME="hondana.theme",K_FS="hondana.fs";
 const FS=[15,17,19,22,25];
 let catalog=null;const cache={};let panelOpen=false;
@@ -141,7 +145,22 @@ function applyTheme(){document.documentElement.dataset.theme=lsGet(K_THEME,"ligh
 function allBooks(){const out=[];catalog.shelves.forEach(s=>s.cats.forEach(c=>c.series.forEach(se=>se.books.forEach(b=>out.push(Object.assign({shelf:s.id,cat:c,series:se.name},b))))));return out}
 function findBook(id){return allBooks().find(b=>b.id===id)}
 function tile(b,cls){return `<span class="tile${b.no?"":" sm"} ${cls||""}" style="background:${b.color}">${b.no?esc(b.no):esc(b.title.slice(0,4))}</span>`}
-async function getBook(id){if(cache[id])return cache[id];const r=await fetch("books/"+id+".json?v="+V);if(!r.ok)throw new Error("load");return cache[id]=await r.json()}
+/* ---------- offline: books saved on this phone ---------- */
+const BC="hondana-books-v1";let savedSet=new Set();
+const hasCaches=()=>typeof caches!=="undefined";
+async function savedResp(id){if(!hasCaches())return null;try{return await (await caches.open(BC)).match("books/"+id+".json")}catch(e){return null}}
+async function refreshSaved(){if(!hasCaches())return;try{const ks=await (await caches.open(BC)).keys();savedSet=new Set(ks.map(k=>(k.url.match(/books\/([^\/?]+)\.json/)||[])[1]).filter(Boolean))}catch(e){}}
+async function saveBook(id){const r=await fetch("books/"+id+".json?v="+V,{cache:"no-cache"});if(!r.ok)throw new Error("save");await (await caches.open(BC)).put("books/"+id+".json",r);await refreshSaved()}
+async function unsaveBook(id){try{await (await caches.open(BC)).delete("books/"+id+".json")}catch(e){}await refreshSaved()}
+async function getBook(id){
+  if(cache[id])return cache[id];
+  try{const r=await fetch("books/"+id+".json?v="+V);if(!r.ok)throw new Error("load");
+    const j=await r.clone().json();
+    if(savedSet.has(id)){try{await (await caches.open(BC)).put("books/"+id+".json",r)}catch(e){}}  // keep the saved copy fresh
+    return cache[id]=j}
+  catch(e){const s=await savedResp(id);if(s)return cache[id]=await s.json();throw e}
+}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2400)}
 
 /* ---------- shelf ---------- */
 function shelfView(){
@@ -149,13 +168,14 @@ function shelfView(){
   const last=lsGet("hondana.last."+shelf.id,null);const lb=last&&findBook(last.id);
   let h=`<div class="top"><img src="icon-180.png" alt=""><h1>わが家の本棚</h1><button class="iconbtn" data-act="theme" aria-label="明るさの切りかえ">${lsGet(K_THEME,"light")==="dark"?"☀️":"🌙"}</button></div>
   <div class="seg" role="tablist">${catalog.shelves.map(s=>`<button role="tab" class="${s.id===shelf.id?"on":""}" data-act="shelf" data-id="${s.id}">${esc(s.name)}</button>`).join("")}</div>`;
+  if(!navigator.onLine)h+=`<div class="offl">📶 いまは電波がありません。📥 マークの本（スマホに保存した本）は、このまま読めます。</div>`;
   if(lb){const p=prog(lb.id);h+=`<button class="cont" data-act="resume" data-id="${lb.id}">${tile(lb)}<span><small>つづきを読む</small><b>${esc(lb.title)}</b><small>${p?("いま "+(p.ch+1)+" / "+lb.chapters+" 章"):""}</small></span></button>`}
   shelf.cats.forEach(c=>{
     h+=`<h2 class="cat"><span>${c.ic}</span>${esc(c.name)}</h2>`;
     c.series.forEach(se=>{
       h+=`<div class="ser">${esc(se.name)}</div><div class="books">`;
       se.books.forEach(b=>{const p=prog(b.id);const pct=p?Math.round(((p.done||[]).length)/b.chapters*100):0;
-        h+=`<button class="bk" data-act="book" data-id="${b.id}">${tile(b)}<span class="info"><span class="t">${esc(b.title)}</span><span class="m" style="display:block">約${b.min}分　全${b.parts?b.parts+"部・":""}${b.chapters}章${pct>=100?"　読了":""}</span>${p?`<span class="prog" style="display:block"><i style="width:${pct}%"></i></span>`:""}</span></button>`});
+        h+=`<button class="bk" data-act="book" data-id="${b.id}">${tile(b)}<span class="info"><span class="t">${esc(b.title)}</span><span class="m" style="display:block">約${b.min}分　全${b.parts?b.parts+"部・":""}${b.chapters}章${pct>=100?"　読了":""}${savedSet.has(b.id)?"　📥保存ずみ":""}</span>${p?`<span class="prog" style="display:block"><i style="width:${pct}%"></i></span>`:""}</span></button>`});
       h+=`</div>`;
     });
   });
@@ -172,6 +192,10 @@ async function bookView(id){
   <div class="cover" style="background:${meta.color}"><div class="t1">${esc(cv.t1||"")}</div><div class="t2">${esc(cv.t2||meta.title)}</div><div class="t3">${esc(cv.t3||"")}</div></div>`;
   if(p)h+=`<button class="primary" data-act="read" data-id="${id}" data-ch="${p.ch}" data-resume="1">つづきから読む（${p.ch+1}章め）</button><button class="ghost" data-act="read" data-id="${id}" data-ch="0">はじめから読む</button>`;
   else h+=`<button class="primary" data-act="read" data-id="${id}" data-ch="0">読みはじめる</button>`;
+  if(hasCaches()){
+    if(savedSet.has(id))h+=`<div class="offl">📥 この本はスマホに保存してあります。電波がなくても読めます。<br><button class="ghost sm" data-act="unsave" data-id="${id}">🗑 保存を消す（しおりは残ります）</button></div>`;
+    else h+=`<button class="ghost" data-act="save" data-id="${id}">📥 この本をスマホに保存（電波がなくても読めるように）</button>`;
+  }
   if(cv.box)h+=`<div class="desc">${esc(cv.box.replace(/\n\s*\n/g,"\n").replace(/^\s+/gm,""))}</div>`;
   h+=`<ul class="toc">`;let lastPart="";
   b.chapters.forEach((c,i)=>{if(c.part&&c.part!==lastPart){h+=`<li class="part">${esc(c.part)}</li>`;lastPart=c.part}
@@ -217,7 +241,7 @@ async function route(){
     if(hsh[0]==="b"&&hsh[1]){app.innerHTML=await bookView(hsh[1]);window.scrollTo(0,0)}
     else if(hsh[0]==="r"&&hsh[1]){app.innerHTML=await readView(hsh[1],+hsh[2]||0,hsh[3]==="c");afterRead()}
     else{app.innerHTML=shelfView();window.scrollTo(0,0)}
-  }catch(e){app.innerHTML=`<p class="empty">読みこめませんでした。電波のよい所でもう一度開いてください。</p><button class="ghost" data-act="home">本棚へもどる</button>`}
+  }catch(e){app.innerHTML=`<p class="empty">この本は読みこめませんでした。<br>電波のよい所でもう一度開いてください。<br>（📥 スマホに保存した本は、電波がなくても読めます）</p><button class="ghost" data-act="home">本棚へもどる</button>`}
 }
 function go(h){if(location.hash===h)route();else location.hash=h}
 
@@ -232,6 +256,8 @@ document.addEventListener("click",e=>{
   else if(a==="panel"){panelOpen=!panelOpen;document.getElementById("panel").hidden=!panelOpen}
   else if(a==="fs"){const i=Math.max(0,Math.min(FS.length-1,lsGet(K_FS,1)+(+t.dataset.d)));lsSet(K_FS,i);applyTheme();saveScroll();const p=prog(curRead.id);route_reload(p)}
   else if(a==="settheme"){lsSet(K_THEME,t.dataset.v);applyTheme();saveScroll();route_reload(prog(curRead.id))}
+  else if(a==="save"){t.disabled=true;t.textContent="保存しています…";saveBook(t.dataset.id).then(()=>{toast("📥 スマホに保存しました。電波がなくても読めます");route()}).catch(()=>{toast("保存できませんでした。電波のよい所で試してください");route()})}
+  else if(a==="unsave"){unsaveBook(t.dataset.id).then(()=>{toast("保存を消しました（しおりは残っています）");route()})}
   else if(a==="choose"){lsSet(K_SHELF,t.dataset.id);document.getElementById("chooserRoot").innerHTML="";route()}
 });
 function route_reload(p){if(!curRead)return;const id=curRead.id,ch=curRead.ch,hs=location.hash;readView(id,ch,true).then(h=>{if(location.hash!==hs)return;document.getElementById("app").innerHTML=h;curRead.resume=p?p.y:0;afterRead()})}
@@ -244,7 +270,9 @@ function chooser(){
 
 applyTheme();
 const st=document.createElement("style");st.id="bookcss";document.head.appendChild(st);
-fetch("catalog.json?v="+V).then(r=>r.json()).then(c=>{catalog=c;route();if(lsGet(K_SHELF,null)==null&&!location.hash.startsWith("#/r"))chooser()})
+if("serviceWorker" in navigator){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
+window.addEventListener("online",()=>{if(!location.hash.startsWith("#/r"))route()});window.addEventListener("offline",()=>{if(!location.hash.startsWith("#/r"))route()});
+fetch("catalog.json?v="+V).then(r=>r.json()).then(async c=>{catalog=c;await refreshSaved();route();if(lsGet(K_SHELF,null)==null&&!location.hash.startsWith("#/r"))chooser()})
   .catch(()=>{document.getElementById("app").innerHTML=`<p class="empty">読みこめませんでした。電波のよい所でもう一度開いてください。</p>`});
 })();
 </script>
