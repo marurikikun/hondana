@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>縦書きの見本</title>
+<style>
+:root{--paper:#fbf7ee;--ink:#2a2420;--accent:#7a1f2b;--muted:#9a8f80}
+html,body{margin:0;height:100%;background:#e9e3d6;overflow:hidden;-webkit-text-size-adjust:100%}
+#book{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.page{position:absolute;inset:0;background:var(--paper);box-shadow:0 0 18px rgba(0,0,0,.15);
+  transition:transform .35s ease;will-change:transform}
+.inner{position:absolute;top:44px;bottom:40px;left:22px;right:22px;
+  writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;
+  font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+  font-size:18px;line-height:1.85;color:var(--ink);overflow:hidden;letter-spacing:.02em}
+.inner p{margin:0;text-indent:1em}
+.inner p.cont{text-indent:0}
+.inner p.sep{text-indent:0;text-align:center;color:var(--muted);margin:0 .6em}
+.inner h2{font-size:21px;margin:0 0 0 1.2em;color:var(--accent);font-weight:bold;letter-spacing:.08em}
+.tcy{text-combine-upright:all;-webkit-text-combine:horizontal}
+.head{position:absolute;top:12px;left:0;right:0;text-align:center;font:12px "Yu Gothic UI","Hiragino Sans",sans-serif;color:var(--muted)}
+.foot{position:absolute;bottom:10px;left:0;right:0;text-align:center;font:12px "Yu Gothic UI","Hiragino Sans",sans-serif;color:var(--muted)}
+#hint{position:fixed;left:0;right:0;bottom:30px;text-align:center;font:13px "Yu Gothic UI","Hiragino Sans",sans-serif;color:#fff;
+  pointer-events:none;transition:opacity .6s}
+#hint span{background:rgba(60,40,30,.75);padding:6px 14px;border-radius:99px}
+#measure{position:absolute;visibility:hidden}
+</style></head><body>
+<div id="book"></div>
+<div id="hint"><span>◀ 左をタップ（または右へスワイプ）で次のページ</span></div>
+<template id="src"><h2><span class="tcy">1</span>　駅前の朝</h2>
+<p>沢渡駅の改札を出ると、正面に、シャッターの下りた商店街がまっすぐにのびている。</p>
+<p>かつては、ここが県北でいちばんにぎやかな通りだった。呉服屋、時計店、レコード屋、喫茶店。日曜日には、歩道に人があふれた。今、シャッターを開けているのは、薬局と、たばこ屋と、古い旅館が一軒だけだ。</p>
+<p>真壁修一は、毎朝七時半に、その通りを歩く。</p>
+<p>五十二歳。紺の背広に、少しくたびれた革靴。髪には白いものがまじりはじめている。駅前から五分ほど歩いた先の、二階建ての古いビルの一階に、「真壁不動産」の看板がかかっている。父の代からの、小さな不動産屋だ。</p>
+<p>シャッターを半分だけ上げ、身をかがめて中に入る。蛍光灯をつける。窓ぎわの棚に並んだ物件のファイルの背表紙を、指でひとなでする。それから、ポットに水を入れて、湯をわかす。</p>
+<p>三十年近く、同じことを続けてきた。</p>
+<p class="sep">＊</p>
+<p>八時ちょうどに、事務の佐伯のり子が来た。</p>
+<p>「社長、また電気つけっぱなしで寝てたんじゃないでしょうね。二階の」</p>
+<p>六十一歳。真壁の父の代から、この店の帳簿を見てきた。小柄で、眼鏡の奥の目つきがするどい。口は悪いが、この町の不動産のことで、のり子の知らないことはない。</p>
+<p>「寝てない。帳簿を見てた」</p>
+<p>「同じことです。体をこわしたら、だれが店を守るんですか」</p>
+<p>のり子は、真壁の机の上に、新聞と郵便物の束を、どさりと置いた。それから、真壁の湯のみに、勝手に茶をいれた。</p>
+<p>八時十五分、若手の中村翔太が、自転車で、息を切らして飛びこんできた。</p>
+<p>「すいません、遅れました！　踏切が、長くて！」</p>
+<p>「沢渡の踏切が長いのは、三十年前からだ」</p>
+<p>真壁が言うと、翔太は、頭をかいた。二十七歳。東京の大学を出て、一度は都内の大手不動産会社に入ったが、二年でやめて、地元に帰ってきた。お人よしで、客にすぐ同情する。不動産屋には、向いていないかもしれない。けれど、真壁は、翔太のそういうところを、きらいではなかった。</p>
+
+<h2><span class="tcy">2</span>　松葉屋の女将</h2>
+<p>九時すぎ、店の引き戸が、静かに開いた。</p>
+<p>藤色の着物に、白い割烹着をかけた、七十すぎの女性が立っていた。背すじが、まっすぐにのびている。駅前で、ただ一軒、営業を続けている旅館「松葉屋」の女将、松葉しず江だった。</p>
+<p>「真壁さん、朝から、すみません」</p>
+<p>「いえ。……どうぞ、こちらへ」</p>
+<p>真壁は、店の奥の、小さな応接の椅子をすすめた。のり子が、すぐに、いちばんいい湯のみで、茶を出した。</p>
+<p class="sep">＊</p>
+<p>しず江は、茶にも手をつけずに、ひざの上で、両手をそろえた。</p>
+<p>「じつは、旅館を、売ろうかと思いまして」</p>
+<p>真壁は、黙って、しず江の顔を見た。</p>
+<p>松葉屋は、明治のおわりから続く旅館だ。木造の三階建て。絹の取引で栄えたころには、東京の商人たちが、何十人も泊まった。今は、部屋の半分を閉めて、しず江と、通いの仲居が二人で、細々と続けている。</p>
+<p>「東京の、投資会社だという方から、お話がありまして。旅館を、土地ごと、買いたいと。……それが、ずいぶん、いい値段なんです」</p>
+<p>しず江は、手さげから、一枚の紙を取り出した。買い付けの申込書だった。真壁は、それを受け取って、目を走らせた。</p>
+<p>――株式会社グランディア・キャピタル。代表取締役、篠原和人。買付価格、二億八千万円。</p>
+<p>真壁は、紙から目を上げなかった。</p>
+<p>二億八千万。この町の、今の地価なら、高く見積もっても、その半分だ。</p></template>
+<script>
+(function(){
+  const book=document.getElementById('book');
+  const srcNodes=[...document.getElementById('src').content.children];
+  let pages=[], cur=0;
+
+  function makePage(){
+    const pg=document.createElement('div'); pg.className='page';
+    pg.innerHTML='<div class="head">残り火　第一話　遺言</div><div class="inner"></div><div class="foot"></div>';
+    book.appendChild(pg); return pg;
+  }
+  function fits(inner){ return inner.scrollWidth <= inner.clientWidth + 1; }
+
+  function paginate(){
+    book.innerHTML=''; pages=[];
+    let pg=makePage(), inner=pg.querySelector('.inner'); pages.push(pg);
+    for(const node of srcNodes){
+      let el=node.cloneNode(true);
+      inner.appendChild(el);
+      if(fits(inner)) continue;
+      // 入りきらない：段落なら文字の途中で分ける
+      inner.removeChild(el);
+      if(el.tagName==='P' && !el.classList.contains('sep')){
+        let text=el.textContent, cls=el.className;
+        while(text.length){
+          const part=document.createElement('p'); if(cls) part.className=cls;
+          inner.appendChild(part);
+          let lo=0, hi=text.length, best=0;
+          while(lo<=hi){ const mid=(lo+hi)>>1; part.textContent=text.slice(0,mid);
+            if(fits(inner)){best=mid; lo=mid+1;} else hi=mid-1; }
+          if(best===0){ inner.removeChild(part); }
+          else { part.textContent=text.slice(0,best); text=text.slice(best);
+            if(!text.length) break; }
+          pg=makePage(); inner=pg.querySelector('.inner'); pages.push(pg);
+          if(best>0){ /* 続きの段落は字下げしない */ cls=(cls?cls+' ':'')+'cont'; }
+        }
+      } else {
+        pg=makePage(); inner=pg.querySelector('.inner'); pages.push(pg);
+        inner.appendChild(el);
+      }
+    }
+    pages.forEach((p,i)=>{ p.querySelector('.foot').textContent=(i+1)+' / '+pages.length; });
+    show(Math.min(cur,pages.length-1), false);
+  }
+
+  // 右から左へ進む：次のページは右から入ってくるのではなく、今のページが右へめくれていく
+  function show(n, anim){
+    cur=Math.max(0,Math.min(n,pages.length-1));
+    pages.forEach((p,i)=>{
+      p.style.transition = anim===false ? 'none' : '';
+      p.style.zIndex = String(pages.length - Math.abs(i-cur));
+      p.style.transform = i<cur ? 'translateX(105%)' : 'translateX(0)';
+      p.style.visibility = (i<cur-1 || i>cur+1) ? 'hidden' : 'visible';
+    });
+    try{ localStorage.setItem('tategaki_sample_page', String(cur)); }catch(e){}
+  }
+  function next(){ if(cur<pages.length-1) show(cur+1); }
+  function prev(){ if(cur>0) show(cur-1); }
+
+  book.addEventListener('click', e=>{ (e.clientX < innerWidth/2) ? next() : prev(); hideHint(); });
+  let sx=null;
+  book.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; }, {passive:true});
+  book.addEventListener('touchend', e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; sx=null;
+    if(dx>40){ next(); hideHint(); } else if(dx<-40){ prev(); hideHint(); } }, {passive:true});
+  addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') next(); if(e.key==='ArrowRight') prev(); });
+  function hideHint(){ document.getElementById('hint').style.opacity='0'; }
+  setTimeout(hideHint, 4000);
+
+  try{ cur=parseInt(localStorage.getItem('tategaki_sample_page')||'0',10)||0; }catch(e){}
+  let t; addEventListener('resize', ()=>{ clearTimeout(t); t=setTimeout(paginate, 200); });
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(paginate);
+})();
+</script>
+</body></html>
