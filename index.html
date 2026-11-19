@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>わが家の本棚</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="本棚">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#7a5230">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --bg:#f6f1ea; --card:#fffdf9; --ink:#2a2420; --sub:#6e645c; --line:#e4dbd0;
+  --accent:#7a5230; --accent-soft:#efe4d6; --shadow:0 1px 3px rgba(60,40,20,.08);
+  --fs:17px;
+  --display:"Hiragino Maru Gothic ProN","Hiragino Sans","BIZ UDPGothic","Yu Gothic",sans-serif;
+  --body:"Hiragino Sans","BIZ UDPGothic","Yu Gothic","Meiryo",sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#171513; --card:#221f1c; --ink:#ece6df; --sub:#a89e94; --line:#3a352f;
+  --accent:#d9b48c; --accent-soft:#3a3128; --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-top:env(safe-area-inset-top,0px)}
+.wrap{max-width:720px;margin:0 auto;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+h1,h2,h3{font-family:var(--display);margin:0}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.top img{width:34px;height:34px;border-radius:9px}
+.top h1{font-size:22px;color:var(--accent);flex:1}
+.iconbtn{border:1px solid var(--line);background:var(--card);border-radius:12px;min-width:44px;height:44px;padding:0 10px;font-size:16px}
+.seg{display:flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);margin-bottom:14px;box-shadow:var(--shadow)}
+.seg button{flex:1;border:0;background:transparent;padding:10px 6px;min-height:48px;font-size:16px;font-family:var(--display)}
+.seg button.on{background:var(--accent);color:#fff;font-weight:700}
+:root[data-theme="dark"] .seg button.on{color:#1b1714}
+.cont{display:flex;gap:12px;align-items:center;background:var(--accent-soft);border-radius:16px;padding:12px 14px;margin-bottom:16px;border:0;width:100%;text-align:left}
+.cont b{display:block;font-family:var(--display);font-size:16px}
+.cont small{color:var(--sub);font-size:13px}
+.cat{margin:18px 0 8px;font-size:20px;display:flex;gap:6px;align-items:center}
+.ser{font-size:13px;color:var(--sub);font-weight:700;margin:10px 0 6px;letter-spacing:.04em}
+.books{display:flex;flex-direction:column;gap:8px}
+.bk{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:left;width:100%;box-shadow:var(--shadow)}
+.tile{flex:none;width:52px;height:70px;border-radius:6px 10px 10px 6px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:24px;box-shadow:inset 4px 0 0 rgba(0,0,0,.18)}
+.tile.sm{font-size:15px;padding:4px;text-align:center;line-height:1.2}
+.bk .info{flex:1;min-width:0}
+.bk .t{font-family:var(--display);font-size:16px;font-weight:700;line-height:1.35}
+.bk .m{font-size:13px;color:var(--sub);margin-top:2px}
+.prog{height:5px;border-radius:99px;background:var(--line);margin-top:6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.chooser{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:20px}
+.chooser .box{background:var(--card);border-radius:18px;padding:20px;max-width:360px;width:100%;text-align:center}
+.chooser h2{font-size:19px;margin-bottom:6px}
+.chooser p{color:var(--sub);font-size:14px;margin:0 0 14px}
+.chooser button{display:block;width:100%;min-height:56px;margin-top:10px;border-radius:14px;border:0;background:var(--accent);color:#fff;font-size:18px;font-family:var(--display);font-weight:700}
+/* book page */
+.back{border:0;background:transparent;color:var(--accent);font-size:16px;padding:8px 0;min-height:44px}
+.cover{border-radius:18px;color:#fff;padding:22px 18px;margin:6px 0 14px;text-align:center;box-shadow:inset 6px 0 0 rgba(0,0,0,.18)}
+.cover .t1{font-size:14px;opacity:.9;letter-spacing:.06em}
+.cover .t2{font-family:var(--display);font-size:24px;font-weight:700;line-height:1.35;margin:8px 0 6px;white-space:pre-line}
+.cover .t3{font-size:13px;opacity:.85}
+.desc{font-size:14px;color:var(--sub);white-space:pre-line;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.primary{display:block;width:100%;min-height:54px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:18px;font-weight:700;font-family:var(--display);margin-bottom:8px}
+:root[data-theme="dark"] .primary{color:#1b1714}
+.ghost{display:block;width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:16px;margin-bottom:14px}
+.toc{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.toc .part{background:var(--accent-soft);font-size:13px;font-weight:700;padding:8px 14px;color:var(--accent)}
+.toc button{display:flex;gap:8px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:transparent;padding:12px 14px;min-height:48px;align-items:baseline}
+.toc li:first-child button{border-top:0}
+.toc .nm{flex:1}
+.toc .tm{font-size:12px;color:var(--sub);white-space:nowrap}
+.toc .ck{width:18px;color:var(--accent);font-weight:700}
+.toc button.now{background:var(--accent-soft)}
+/* reader */
+.rbar{position:sticky;top:0;z-index:10;background:var(--bg);display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);margin:-12px 0 12px}
+.rbar .rt{flex:1;min-width:0;font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px;display:grid;gap:10px}
+.panel .row{display:flex;align-items:center;gap:8px}
+.panel .row span{flex:1;font-size:15px}
+.panel .row button{min-width:56px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:16px}
+.panel .row button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chead .part{font-size:13px;color:var(--sub);margin-bottom:2px}
+.chead h2{font-size:calc(var(--fs)*1.3);line-height:1.4;color:var(--c,var(--accent));border-bottom:3px solid var(--c,var(--accent));padding-bottom:6px;margin-bottom:4px}
+.chead .tm{font-size:13px;color:var(--sub);margin-bottom:14px}
+.content{font-size:var(--fs);line-height:1.85;overflow-wrap:anywhere}
+.content p{margin:0 0 .9em}
+.content h3{font-size:1.08em;color:var(--c,var(--accent));border-left:4px solid var(--c,var(--accent));padding-left:.5em;margin:1.4em 0 .5em;line-height:1.5}
+.content .point{background:#fff6dd;border:1px solid #e8cf86;border-radius:10px;padding:.7em .9em;margin:1em 0;font-size:.95em}
+.content .point b{color:#a35a00}
+.content .memo{background:#eef5ec;border:1px solid #b9d4b1;border-radius:10px;padding:.7em .9em;margin:1em 0;font-size:.95em}
+.content .memo b{color:#3a6b2c}
+.content .q{font-weight:700;color:var(--c,var(--accent));margin-top:1em}
+.content .a{color:var(--sub);font-size:.95em}
+.content .small{font-size:.85em;color:var(--sub)}
+.content .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.6em 0 1em}
+.content table{border-collapse:collapse;width:100%;font-size:.88em;line-height:1.5}
+.content th,.content td{border:1px solid var(--line);padding:.35em .5em;vertical-align:top;text-align:left}
+.content th{background:var(--accent-soft)}
+.content .sep{text-align:center;color:var(--sub);margin:1.2em 0;letter-spacing:.5em}
+.content img{max-width:100%}
+:root[data-theme="dark"] .chead h2{color:var(--accent);border-color:var(--accent)}
+:root[data-theme="dark"] .content *{background-color:transparent!important;color:inherit!important;border-color:var(--line)!important}
+:root[data-theme="dark"] .content .point{background-color:#3a3020!important}
+:root[data-theme="dark"] .content .memo{background-color:#24321f!important}
+:root[data-theme="dark"] .content th{background-color:#2e2924!important}
+:root[data-theme="dark"] .content h3,:root[data-theme="dark"] .content .q,:root[data-theme="dark"] .content .point b,:root[data-theme="dark"] .content .memo b{color:var(--accent)!important}
+.navs{display:flex;gap:8px;margin-top:22px}
+.navs button{flex:1;min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:16px;font-family:var(--display)}
+.navs button.next{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+:root[data-theme="dark"] .navs button.next{color:#1b1714}
+.done{text-align:center;padding:16px;background:var(--accent-soft);border-radius:14px;margin-top:18px}
+.empty{color:var(--sub);text-align:center;padding:30px 0}
+.foot{color:var(--sub);font-size:12px;text-align:center;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="empty">読みこみ中…</p></div>
+<div id="chooserRoot"></div>
+<script>
+(function(){
+"use strict";
+const V="20261119b";
+const K_SHELF="hondana.shelf",K_THEME="hondana.theme",K_FS="hondana.fs";
+const FS=[15,17,19,22,25];
+let catalog=null;const cache={};let panelOpen=false;
+
+function lsGet(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function prog(id){return lsGet("hondana.prog."+id,null)}
+function setProg(id,p){lsSet("hondana.prog."+id,p)}
+function applyTheme(){document.documentElement.dataset.theme=lsGet(K_THEME,"light");document.documentElement.style.setProperty("--fs",FS[lsGet(K_FS,1)]+"px")}
+function allBooks(){const out=[];catalog.shelves.forEach(s=>s.cats.forEach(c=>c.series.forEach(se=>se.books.forEach(b=>out.push(Object.assign({shelf:s.id,cat:c,series:se.name},b))))));return out}
+function findBook(id){return allBooks().find(b=>b.id===id)}
+function tile(b,cls){return `<span class="tile${b.no?"":" sm"} ${cls||""}" style="background:${b.color}">${b.no?esc(b.no):esc(b.title.slice(0,4))}</span>`}
+async function getBook(id){if(cache[id])return cache[id];const r=await fetch("books/"+id+".json?v="+V);if(!r.ok)throw new Error("load");return cache[id]=await r.json()}
+
+/* ---------- shelf ---------- */
+function shelfView(){
+  const sid=lsGet(K_SHELF,null)||"mama";const shelf=catalog.shelves.find(s=>s.id===sid)||catalog.shelves[0];
+  const last=lsGet("hondana.last."+shelf.id,null);const lb=last&&findBook(last.id);
+  let h=`<div class="top"><img src="icon-180.png" alt=""><h1>わが家の本棚</h1><button class="iconbtn" data-act="theme" aria-label="明るさの切りかえ">${lsGet(K_THEME,"light")==="dark"?"☀️":"🌙"}</button></div>
+  <div class="seg" role="tablist">${catalog.shelves.map(s=>`<button role="tab" class="${s.id===shelf.id?"on":""}" data-act="shelf" data-id="${s.id}">${esc(s.name)}</button>`).join("")}</div>`;
+  if(lb){const p=prog(lb.id);h+=`<button class="cont" data-act="resume" data-id="${lb.id}">${tile(lb)}<span><small>つづきを読む</small><b>${esc(lb.title)}</b><small>${p?("いま "+(p.ch+1)+" / "+lb.chapters+" 章"):""}</small></span></button>`}
+  shelf.cats.forEach(c=>{
+    h+=`<h2 class="cat"><span>${c.ic}</span>${esc(c.name)}</h2>`;
+    c.series.forEach(se=>{
+      h+=`<div class="ser">${esc(se.name)}</div><div class="books">`;
+      se.books.forEach(b=>{const p=prog(b.id);const pct=p?Math.round(((p.done||[]).length)/b.chapters*100):0;
+        h+=`<button class="bk" data-act="book" data-id="${b.id}">${tile(b)}<span class="info"><span class="t">${esc(b.title)}</span><span class="m" style="display:block">約${b.min}分　全${b.parts?b.parts+"部・":""}${b.chapters}章${pct>=100?"　読了":""}</span>${p?`<span class="prog" style="display:block"><i style="width:${pct}%"></i></span>`:""}</span></button>`});
+      h+=`</div>`;
+    });
+  });
+  h+=`<p class="foot">ほかの家族の本棚は、上のボタンで切りかえられます。</p>`;
+  return h;
+}
+
+/* ---------- book page ---------- */
+async function bookView(id){
+  const meta=findBook(id);if(!meta)return `<p class="empty">本が見つかりません。</p>`;
+  const b=await getBook(id);const p=prog(id);const done=new Set((p&&p.done)||[]);
+  const cv=b.cover||{};
+  let h=`<button class="back" data-act="home">‹ 本棚</button>
+  <div class="cover" style="background:${meta.color}"><div class="t1">${esc(cv.t1||"")}</div><div class="t2">${esc(cv.t2||meta.title)}</div><div class="t3">${esc(cv.t3||"")}</div></div>`;
+  if(p)h+=`<button class="primary" data-act="read" data-id="${id}" data-ch="${p.ch}" data-resume="1">つづきから読む（${p.ch+1}章め）</button><button class="ghost" data-act="read" data-id="${id}" data-ch="0">はじめから読む</button>`;
+  else h+=`<button class="primary" data-act="read" data-id="${id}" data-ch="0">読みはじめる</button>`;
+  if(cv.box)h+=`<div class="desc">${esc(cv.box.replace(/\n\s*\n/g,"\n").replace(/^\s+/gm,""))}</div>`;
+  h+=`<ul class="toc">`;let lastPart="";
+  b.chapters.forEach((c,i)=>{if(c.part&&c.part!==lastPart){h+=`<li class="part">${esc(c.part)}</li>`;lastPart=c.part}
+    h+=`<li><button class="${p&&p.ch===i?"now":""}" data-act="read" data-id="${id}" data-ch="${i}"><span class="ck">${done.has(i)?"✓":""}</span><span class="nm">${esc(c.t)}</span><span class="tm">${esc(c.time||"")}</span></button></li>`});
+  h+=`</ul>`;
+  return h;
+}
+
+/* ---------- reader ---------- */
+let curRead=null,scrollT=null;
+async function readView(id,ch,resume){
+  const meta=findBook(id);const b=await getBook(id);ch=Math.max(0,Math.min(b.chapters.length-1,ch|0));
+  const c=b.chapters[ch];const accent=(b.cover&&b.cover.accent)||meta.color;
+  document.getElementById("bookcss").textContent=b.css||"";
+  const p=prog(id)||{ch:0,y:0,done:[]};p.done=p.done||[];if(!p.done.includes(ch))p.done.push(ch);p.ch=ch;if(!resume)p.y=0;setProg(id,p);
+  lsSet("hondana.last."+meta.shelf,{id});
+  curRead={id,ch,resume:resume?p.y:0};
+  const fsI=lsGet(K_FS,1),dark=lsGet(K_THEME,"light")==="dark";
+  let h=`<div class="rbar"><button class="back" data-act="book" data-id="${id}">‹ もくじ</button><span class="rt">${esc(meta.title)}</span><button class="iconbtn" data-act="panel" aria-label="文字の大きさと明るさ">Aa</button></div>
+  <div class="panel" id="panel" ${panelOpen?"":"hidden"}><div class="row"><span>文字の大きさ</span><button data-act="fs" data-d="-1" aria-label="小さく" ${fsI<=0?"disabled":""}>A−</button><button data-act="fs" data-d="1" aria-label="大きく" ${fsI>=FS.length-1?"disabled":""}>A＋</button></div>
+  <div class="row"><span>画面の明るさ</span><button class="${dark?"":"on"}" data-act="settheme" data-v="light">明るい</button><button class="${dark?"on":""}" data-act="settheme" data-v="dark">暗い</button></div></div>
+  <div class="chead">${c.part?`<div class="part">${esc(c.part)}</div>`:""}<h2 style="--c:${accent}">${esc(c.t)}</h2><div class="tm">${esc(c.time||"")}${c.time?"　":""}${ch+1} / ${b.chapters.length}</div></div>
+  <div class="content bk-${id}" style="--c:${accent}">${c.html}</div>
+  <div class="navs">${ch>0?`<button data-act="read" data-id="${id}" data-ch="${ch-1}">‹ 前へ</button>`:""}${ch<b.chapters.length-1?`<button class="next" data-act="read" data-id="${id}" data-ch="${ch+1}">次へ ›</button>`:""}</div>`;
+  if(ch===b.chapters.length-1)h+=`<div class="done">🎉 おつかれさまでした。<br><button class="ghost" style="margin:10px 0 0" data-act="home">本棚へもどる</button></div>`;
+  return h;
+}
+function afterRead(){
+  document.querySelectorAll(".content table").forEach(t=>{if(t.parentElement.classList.contains("tw"))return;const w=document.createElement("div");w.className="tw";t.parentNode.insertBefore(w,t);w.appendChild(t)});
+  const y=curRead&&curRead.resume;
+  requestAnimationFrame(()=>{if(y){const H=document.documentElement.scrollHeight-innerHeight;window.scrollTo(0,Math.max(0,y*H))}else window.scrollTo(0,0)});
+}
+function saveScroll(){if(!curRead)return;const H=document.documentElement.scrollHeight-innerHeight;const p=prog(curRead.id);if(!p)return;p.ch=curRead.ch;p.y=H>0?Math.min(1,scrollY/H):0;setProg(curRead.id,p)}
+window.addEventListener("scroll",()=>{clearTimeout(scrollT);scrollT=setTimeout(saveScroll,400)},{passive:true});
+window.addEventListener("pagehide",saveScroll);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveScroll()});
+
+/* ---------- routing ---------- */
+async function route(){
+  const app=document.getElementById("app");const hsh=location.hash.replace(/^#\/?/,"").split("/");
+  if(curRead)saveScroll();curRead=null;
+  try{
+    if(hsh[0]==="b"&&hsh[1]){app.innerHTML=await bookView(hsh[1]);window.scrollTo(0,0)}
+    else if(hsh[0]==="r"&&hsh[1]){app.innerHTML=await readView(hsh[1],+hsh[2]||0,hsh[3]==="c");afterRead()}
+    else{app.innerHTML=shelfView();window.scrollTo(0,0)}
+  }catch(e){app.innerHTML=`<p class="empty">読みこめませんでした。電波のよい所でもう一度開いてください。</p><button class="ghost" data-act="home">本棚へもどる</button>`}
+}
+function go(h){if(location.hash===h)route();else location.hash=h}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-act]");if(!t)return;const a=t.dataset.act;
+  if(a==="home")go("#/");
+  else if(a==="shelf"){lsSet(K_SHELF,t.dataset.id);route()}
+  else if(a==="book")go("#/b/"+t.dataset.id);
+  else if(a==="resume"){const p=prog(t.dataset.id);go("#/r/"+t.dataset.id+"/"+(p?p.ch:0)+"/c")}
+  else if(a==="read")go("#/r/"+t.dataset.id+"/"+t.dataset.ch+(t.dataset.resume?"/c":""));
+  else if(a==="theme"){lsSet(K_THEME,lsGet(K_THEME,"light")==="dark"?"light":"dark");applyTheme();route()}
+  else if(a==="panel"){panelOpen=!panelOpen;document.getElementById("panel").hidden=!panelOpen}
+  else if(a==="fs"){const i=Math.max(0,Math.min(FS.length-1,lsGet(K_FS,1)+(+t.dataset.d)));lsSet(K_FS,i);applyTheme();saveScroll();const p=prog(curRead.id);route_reload(p)}
+  else if(a==="settheme"){lsSet(K_THEME,t.dataset.v);applyTheme();saveScroll();route_reload(prog(curRead.id))}
+  else if(a==="choose"){lsSet(K_SHELF,t.dataset.id);document.getElementById("chooserRoot").innerHTML="";route()}
+});
+function route_reload(p){if(!curRead)return;const id=curRead.id,ch=curRead.ch,hs=location.hash;readView(id,ch,true).then(h=>{if(location.hash!==hs)return;document.getElementById("app").innerHTML=h;curRead.resume=p?p.y:0;afterRead()})}
+window.addEventListener("hashchange",route);
+
+function chooser(){
+  document.getElementById("chooserRoot").innerHTML=`<div class="chooser"><div class="box"><h2>どなたの本棚を開きますか？</h2><p>このスマホでいつも最初に開く本棚です。あとから上のボタンで、いつでも切りかえられます。</p>
+  ${catalog.shelves.map(s=>`<button data-act="choose" data-id="${s.id}">${esc(s.name)}</button>`).join("")}</div></div>`;
+}
+
+applyTheme();
+const st=document.createElement("style");st.id="bookcss";document.head.appendChild(st);
+fetch("catalog.json?v="+V).then(r=>r.json()).then(c=>{catalog=c;route();if(lsGet(K_SHELF,null)==null&&!location.hash.startsWith("#/r"))chooser()})
+  .catch(()=>{document.getElementById("app").innerHTML=`<p class="empty">読みこめませんでした。電波のよい所でもう一度開いてください。</p>`});
+})();
+</script>
+</body>
+</html>
